@@ -1,0 +1,614 @@
+---
+include:
+  - docassemble.AssemblyLine:assembly_line.yml
+---
+metadata:
+  title: >-
+    Minnesota health care directive
+  short title: >-
+    MN health care directive
+  description: |-
+    This interview helps someone in Minnesota get a Minnesota health care directive.
+  tags:
+    - "ES-00-00-00-00"
+    - "ES-03-00-00-00"
+  authors:
+    - Coleman Silver
+  original_form:
+    - https://www.mnmed.org/application/files/3916/7163/5093/MN-Health-Care-Directive.pdf
+  help_page_url: >-
+    https://mn.gov/board-on-aging/connect-to-services/legal/advanced-care-planning/advance-directives/
+  help_page_title: >-
+    Advance Directives
+  allowed_courts: []
+  typical_role: "na"
+  al_weaver_version: "1.10.3"
+  generated_on: "2024-04-17"
+---
+code: |
+  # This controls the default country and list of states in address field questions
+  AL_DEFAULT_COUNTRY = "US"
+---
+code: |
+  # This controls the default state in address field questions
+  AL_DEFAULT_STATE = "MN"
+---
+code: |
+  github_repo_name =  'docassemble-MinnesotaHealthCareDirective'
+---
+code: |
+  interview_short_title = "Get a Minnesota health care directive"
+---
+code: |
+  al_form_type = "other" 
+---
+objects:
+  - witnesses: ALPeopleList.using(there_are_any=True)
+  - users: ALPeopleList.using(ask_number=True,target_number=1)
+---
+sections:
+  - review_Minnesota_health_care_directive: Review your answers
+---
+#################### Interview order #####################
+comment: |
+  Controls order and branching logic for questions specific to this form
+id: interview_order_Minnesota_health_care_directive
+code: |
+  # Set the allowed courts for this interview
+  allowed_courts = []
+  nav.set_section("review_Minnesota_health_care_directive")
+  user_role = "na"
+  user_ask_role = "na"
+  users.gather()
+  set_parts(subtitle=str(users))
+  users[0].birthdate
+  users[0].address.address
+  set_progress(14)
+  agents[0]
+  power_limitations
+  set_progress(28)
+  statement_to_loved_ones
+  antibiotics_thoughts
+  set_progress(42)
+  other_signor
+  witnesses.gather()
+  set_progress(56)
+  witnesses[0].address.address
+  witnesses[1].address.address
+  signature_date
+  interview_order_Minnesota_health_care_directive = True
+---
+###################### Main order ######################
+comment: |
+  This block includes the logic for standalone interviews.
+  Delete mandatory: True to include in another interview
+mandatory: True
+code: |
+  al_intro_screen
+  Minnesota_health_care_directive_intro
+  interview_order_Minnesota_health_care_directive
+  signature_date
+  # Store anonymous data for analytics / statistics
+  store_variables_snapshot(
+      persistent=True,
+      data={
+          "zip": showifdef("users[0].address.zip"),
+          "reached_interview_end": True,
+      },
+  )
+  Minnesota_health_care_directive_download
+---
+comment: |
+  This question is used to introduce your interview. Please customize
+id: Minnesota_health_care_directive
+continue button field: Minnesota_health_care_directive_intro
+question: |
+  Minnesota health care directive
+subquestion: |
+  This interview will help you get a Minnesota health care directive.
+  
+  Before you get started, please gather:
+  
+  1. The name and permissions of your health care agent;
+  2. The name and permissions of any alternate health care agents. 
+  
+  When you are finished, you will need to:
+  
+  1. Sign the document either:
+  a. In the presence of a notary and have the document notarized; OR 
+  b. Sign in the presence of two witnesses, and have each witness provide their addresses and signatures.
+  
+  Most people take about 30 minutes to 1 hour to finish this interview.
+---
+id: Part 1 Appointment of Health
+question: |
+  Part 1: Appointment of Health
+subquestion: |
+  This is who you want to make health care decisions for you if you are unable to decide or speak for yourself. You can change your agent or alternative agents at any time and do not have to appoint an agent or alternative agent if you do not wish to. NOTE: If you appoint an agent, you should discuss this health directive with your agent and give your agent a copy. If you do not wish to appoint an agent, you may leave this section blank and proceed to Part 2.
+fields:
+  - "Agent's full name": agents[0]
+  - "Second alternative agent's phone number": agents[2].phone_number
+    datatype: number
+    required: False
+  - "Fourth alternative agent's phone number": agents[4].phone_number
+    datatype: number
+    required: False
+  - "Your relationship with the third alternative agent": agents[3].relationship
+    required: False
+  - "Your relationship with the Agent": agents[0].relationship
+  - "Your relationship with the second alternative agent": agents[2].relationship
+    required: False
+  - "Your agent's phone number": agents[0].phone_number
+    datatype: number
+  - "Your third alternative agent's full address": agents[3].address.address
+    required: False
+  - "Your relationship with the fourth alternative agent": agents[4].relationship
+    required: False
+  - "List of alternative agents": agents[1]
+    required: False
+  - "Your second alternative agent's full address": agents[2].address.address
+    required: False
+  - "Your agent's full address": agents[0].address.address
+  - "Your first alternative agent's phone number": agents[1].phone_number
+  - "Fourth alternative agent's full address": agents[4].address.address
+    required: False
+  - "Third alternative agent's phone number": agents[3].phone_number
+    required: False
+  - "Your relationship with the first alternative agent": agents[1].relationship
+    required: False
+  - "Your first alternative agent's address": agents[1].address.address
+    required: False
+---
+id: Part 1 Appointment of Health Continued
+question: |
+  Part 1: Appointment of Health Continued
+subquestion: |
+  This is what you want your health care agent to be able to do if you are unable to speak for yourself.
+  
+  Your health care agent is automatically given the powers listed below in (A) through (D). Your health care agent must follow your instructions as you list them or any other instructions you have given the agent. If you have not given health care instructions, your agent must act in your best interest. 
+  
+  Whenever you are unable to decide or speak for yourself, your healthcare agent has the power to:
+  
+  (A)	Make any health care decision for you.  This includes the power to give, refuse, or withdraw consent to any care, treatment, service, or procedures.  This includes deciding whether to stop or not start health care that is keeping you or might keep you alive, and deciding about intrusive mental health treatment.
+  
+  (B)	Choose your health care providers.
+  
+  (C)	Choose where you live and receive care and support when those choices relate to your health care needs.
+  
+  (D)	Review your medical records and have the same rights that you would have to give your medical records to other people.
+  
+  If you DO NOT want your health care agent to have a power listed above in (A) through (D) OR if you want to LIMIT any power in (A) through (D), I MUST say that under "Power limitations:"
+fields:
+  - "Power limitations": power_limitations
+---
+id: Part 1 Appointment of Health Continued
+question: |
+  Part 1: Appointment of Health Continued
+subquestion: |
+  Your health care agent is not automatically given the 2 powers listed below. If you want your agent to have either of those powers, you must check either or both of the following:
+fields:
+  - "To decide what will happen with my body when I die (burial, cremation)": initial_burial
+    datatype: yesno
+  - "If you have any other comments about your health care agent's pwoers or limits on those powers, you can say them here": power_comments
+    required: False
+  - "To decide whether to donate any parts of your body, including organs, tissues, and eyes, when you die": initial_bodypart
+    datatype: yesno
+---
+id: Part 2 Health Care Instructions
+question: |
+  Part 2: Health Care Instructions
+subquestion: |
+  NOTE: Complete this Part 2 if you wish to give health care instructions.  If you appointed an agent in Part 1, completing this Part 2 is optional but would be very helpful to your agent.  However, if you chose not to appoint an agent in Part 1, you must complete some or all of this Part 2 if you wish to make a valid health care directive.
+  
+  These are instructions for your health care when you are unable to decide or speak for yourself. These instructions must be followed so long as they address your needs. 
+  These are your beliefs and values about your health care. 
+  
+  You want to clarify these things in case your agent need to make decisions about your health care:
+fields:
+  - "Your personal statement to loved ones and caretakers": statement_to_loved_ones
+    required: False
+  - "Your spiritual or religious beliefs and traditions": spiritual_religious_beliefs
+    required: False
+  - "Your thoughts about how your medical condition might affect family": effect_on_family
+    required: False
+  - "Your fears about your health care": health_care_fears
+    required: False
+  - "Your beliefs about when life would no longer be worth living": life_worth_living
+    required: False
+  - "Your goals for your health care": health_care_goals
+    required: False
+  - "Your thoughts about how your health care should be handled if you become pregnant": health_care_if_pregnant
+    required: False
+---
+id: Part 2 Health Care Instructions Continued
+question: |
+  Part 2: Health Care Instructions Continued
+subquestion: |
+  Many medical treatments may be used to try to improve your medical condition or to prolong your life. Examples include artificial breathing by a machine connected to a tube in the lungs, artificial feeding or fluids through tubes, attempts to start a stopped heart, surgeries, dialysis, antibiotics, and blood transfusions.  Most medical treatments can be tried for a while and then stopped if they do not help. 
+  
+  This is how you feel about specific medical procedures:
+fields:
+  - "Antibiotics": antibiotics_thoughts
+  - "Cardiopulmonary Resuscitation (CPR)": resuscitation_thoughts
+    required: False
+  - "Intubation": intubation_thoughts
+    required: False
+  - "Dialysis": dialysis_thoughts
+    required: False
+  - "Nutrition support and hydration (feeding tubes)": feeding_tubes_thoughts
+    required: False
+  - "CPAP and BiPAP": cpap_and_bipap_thoughts
+    required: False
+---
+id: Part 2 Health Care Instructions Continued
+question: |
+  Part 2: Health Care Instructions Continued
+subquestion: |
+  You have these views about your health care in these situations: 
+  (NOTE: You can discuss general feelings about specific treatments, or leave any of them blank)
+fields:
+  - "If I were completely dependent on others for my care and unable to decide or speak for myself, I would want": completely_dependent_thoughts
+    required: False
+  - "If you were dying and unable to decide or speak for yourself, you would want": dying_unable_to_speak_thoughts
+    required: False
+  - "If you were permanently unconscious and unable to decide or speak for yourself, you would want": permanently_unconcious_thoughts
+    required: False
+  - "If you had a reasonable chance of recovery, and were temporarily unable to decide or speak for yourself, you would want": reasonable_chance_thoughts
+    required: False
+  - "In all circumstances, your doctors will try to keep you comfortable and reduce pain. This is how you feel about pain relief if it would affect your alterness or if it could shorten your life": pain_relief_thoughts
+    required: False
+---
+id: Part 2 Health Care Instructions Continued
+question: |
+  Part 2: Health Care Instructions Continued
+subquestion: |
+  There are other things that you want or do not want for your health care, if possible:
+fields:
+  - "Your wishes about donating parts of your body when you die": donating_bodyparts
+    required: False
+  - "Who would you like to be your preferred doctor": preferred_doctor
+  - "Where you would like to receive healthcare (name of facility and address)": where_to_receive_healthcare
+    required: False
+  - "Where you would like to die and other wishes you have about dying": where_to_die
+    required: False
+  - "Your wishes about what happens to your body when you die (cremation or burial)": cremation_or_burial
+    required: False
+---
+id: Part 3 Making the Document Legal
+question: |
+  Part 3: Making the Document Legal
+subquestion: |
+  You must sign the document and it must be verified either by a notary public (option 1) or witnessed by two witnesses (option 2). It must be dated when it is verified or witnessed. 
+  
+  If you sign the document, you must be thinking clearly, agree with everything that is written in the document, and have made this document willingly. 
+  
+  If you cannot sign your name and ask someone to sign the document for you, please have them sign the document and enter there name below:
+fields:
+  - "Printed name of person who you asked to sign the document for you": other_signor
+    required: False
+---
+id: preview Minnesota_health_care_directive
+question: |
+  Preview your form before you sign it
+subquestion: |
+  Here is a preview of the form you will sign on the next page.   
+  
+  ${ al_court_bundle.as_pdf(key='preview') }
+
+  Click the image to open it in a new tab. Click the "Edit answers" button
+  to edit your answers.
+
+  ${ action_button_html(url_action('review_Minnesota_health_care_directive'), label='Edit answers', color='info') }
+  
+  Remember to come back to this window to continue and sign your form.
+continue button field: Minnesota_health_care_directive_preview_question    
+---
+code: |
+  signature_fields = []
+---
+code: |
+  # This is a placeholder for the addresses that will be searched
+  # for matching address to court. Edit if court venue is based on 
+  # a different address than the user's
+  [user.address.address for user in users.complete_elements()]
+  addresses_to_search = [user.address for user in users.complete_elements()]
+---
+id: Minnesota health care directive review screen
+event: review_Minnesota_health_care_directive
+question: |
+  Review your answers
+review:
+  - Edit: antibiotics_thoughts
+    button: |
+      **Antibiotics**:
+      ${ antibiotics_thoughts }
+  - Edit: agents[0]
+    button: |
+      **Agent's full name**:
+      ${ agents[0] }
+  - Edit: agents[2].phone_number
+    button: |
+      **Second alternative agent's phone number**:
+      ${ agents[2].phone_number }
+  - Edit: agents[4].phone_number
+    button: |
+      **Fourth alternative agent's phone number**:
+      ${ agents[4].phone_number }
+  - Edit: agents[3].relationship
+    button: |
+      **Your relationship with the third alternative agent**:
+      ${ agents[3].relationship }
+  - Edit: agents[0].relationship
+    button: |
+      **Your relationship with the Agent**:
+      ${ agents[0].relationship }
+  - Edit: completely_dependent_thoughts
+    button: |
+      **If I were completely dependent on others for my care and unable to decide or speak for myself, I would want**:
+      ${ completely_dependent_thoughts }
+  - Edit: initial_burial
+    button: |
+      **To decide what will happen with my body when I die (burial, cremation)**:
+      ${ word(yesno(initial_burial)) }
+  - Edit: agents[2].relationship
+    button: |
+      **Your relationship with the second alternative agent**:
+      ${ agents[2].relationship }
+  - Edit: statement_to_loved_ones
+    button: |
+      **Your personal statement to loved ones and caretakers**:
+      ${ statement_to_loved_ones }
+  - Edit: resuscitation_thoughts
+    button: |
+      **Cardiopulmonary Resuscitation (CPR)**:
+      ${ resuscitation_thoughts }
+  - Edit: intubation_thoughts
+    button: |
+      **Intubation**:
+      ${ intubation_thoughts }
+  - Edit: spiritual_religious_beliefs
+    button: |
+      **Your spiritual or religious beliefs and traditions**:
+      ${ spiritual_religious_beliefs }
+  - Edit: agents[0].phone_number
+    button: |
+      **Your agent's phone number**:
+      ${ agents[0].phone_number }
+  - Edit: donating_bodyparts
+    button: |
+      **Your wishes about donating parts of your body when you die**:
+      ${ donating_bodyparts }
+  - Edit: users.revisit
+    button: |
+      **Users**
+
+      % for item in users:
+        * ${ item }
+      % endfor
+  - Edit: agents[3].address.address
+    button: |
+      **Your third alternative agent's full address**:
+      ${ agents[3].address.address.block() }
+  - Edit: dialysis_thoughts
+    button: |
+      **Dialysis**:
+      ${ dialysis_thoughts }
+  - Edit: agents[4].relationship
+    button: |
+      **Your relationship with the fourth alternative agent**:
+      ${ agents[4].relationship }
+  - Edit: power_limitations
+    button: |
+      **Power limitations**:
+      ${ power_limitations }
+  - Edit: agents[1]
+    button: |
+      **List of alternative agents**:
+      ${ agents[1] }
+  - Edit: dying_unable_to_speak_thoughts
+    button: |
+      **If you were dying and unable to decide or speak for yourself, you would want**:
+      ${ dying_unable_to_speak_thoughts }
+  - Edit: permanently_unconcious_thoughts
+    button: |
+      **If you were permanently unconscious and unable to decide or speak for yourself, you would want**:
+      ${ permanently_unconcious_thoughts }
+  - Edit: witnesses.revisit
+    button: |
+      **Witnesses**
+
+      % for item in witnesses:
+        * ${ item }
+      % endfor
+  - Edit: preferred_doctor
+    button: |
+      **Who would you like to be your preferred doctor**:
+      ${ preferred_doctor }
+  - Edit: agents[2].address.address
+    button: |
+      **Your second alternative agent's full address**:
+      ${ agents[2].address.address.block() }
+  - Edit: reasonable_chance_thoughts
+    button: |
+      **If you had a reasonable chance of recovery, and were temporarily unable to decide or speak for yourself, you would want**:
+      ${ reasonable_chance_thoughts }
+  - Edit: agents[0].address.address
+    button: |
+      **Your agent's full address**:
+      ${ agents[0].address.address.block() }
+  - Edit: feeding_tubes_thoughts
+    button: |
+      **Nutrition support and hydration (feeding tubes)**:
+      ${ feeding_tubes_thoughts }
+  - Edit: agents[1].phone_number
+    button: |
+      **Your first alternative agent's phone number**:
+      ${ agents[1].phone_number }
+  - Edit: power_comments
+    button: |
+      **If you have any other comments about your health care agent's pwoers or limits on those powers, you can say them here**:
+      ${ power_comments }
+  - Edit: agents[4].address.address
+    button: |
+      **Fourth alternative agent's full address**:
+      ${ agents[4].address.address.block() }
+  - Edit: effect_on_family
+    button: |
+      **Your thoughts about how your medical condition might affect family**:
+      ${ effect_on_family }
+  - Edit: health_care_fears
+    button: |
+      **Your fears about your health care**:
+      ${ health_care_fears }
+  - Edit: cpap_and_bipap_thoughts
+    button: |
+      **CPAP and BiPAP**:
+      ${ cpap_and_bipap_thoughts }
+  - Edit: initial_bodypart
+    button: |
+      **To decide whether to donate any parts of your body, including organs, tissues, and eyes, when you die**:
+      ${ word(yesno(initial_bodypart)) }
+  - Edit: agents[3].phone_number
+    button: |
+      **Third alternative agent's phone number**:
+      ${ agents[3].phone_number }
+  - Edit: agents[1].relationship
+    button: |
+      **Your relationship with the first alternative agent**:
+      ${ agents[1].relationship }
+  - Edit: pain_relief_thoughts
+    button: |
+      **In all circumstances, your doctors will try to keep you comfortable and reduce pain. This is how you feel about pain relief if it would affect your alterness or if it could shorten your life**:
+      ${ pain_relief_thoughts }
+  - Edit: life_worth_living
+    button: |
+      **Your beliefs about when life would no longer be worth living**:
+      ${ life_worth_living }
+  - Edit: signature_date
+    button: |
+      **Date of Signature**:
+      ${ signature_date }
+  - Edit: where_to_receive_healthcare
+    button: |
+      **Where you would like to receive healthcare (name of facility and address)**:
+      ${ where_to_receive_healthcare }
+  - Edit: where_to_die
+    button: |
+      **Where you would like to die and other wishes you have about dying**:
+      ${ where_to_die }
+  - Edit: other_signor
+    button: |
+      **Printed name of person who you asked to sign the document for you**:
+      ${ other_signor }
+  - Edit: health_care_goals
+    button: |
+      **Your goals for your health care**:
+      ${ health_care_goals }
+  - Edit: cremation_or_burial
+    button: |
+      **Your wishes about what happens to your body when you die (cremation or burial)**:
+      ${ cremation_or_burial }
+  - Edit: agents[1].address.address
+    button: |
+      **Your first alternative agent's address**:
+      ${ agents[1].address.address.block() }
+  - Edit: health_care_if_pregnant
+    button: |
+      **Your thoughts about how your health care should be handled if you become pregnant**:
+      ${ health_care_if_pregnant }
+---
+continue button field: users.revisit
+question: |
+  Edit users
+subquestion: |
+  ${ users.table }
+
+  ${ users.add_action() }
+---
+table: users.table
+rows: users
+columns:
+  - Address: |
+      row_item.address.block() if defined("row_item.address.address") else ""
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+  - Birthdate: |
+      row_item.birthdate if defined("row_item.birthdate") else ""
+edit:
+  - address.address
+  - name.first
+  - birthdate
+confirm: True
+
+---
+continue button field: witnesses.revisit
+question: |
+  Edit witnesses
+subquestion: |
+  ${ witnesses.table }
+
+  ${ witnesses.add_action() }
+---
+table: witnesses.table
+rows: witnesses
+columns:
+  - Address: |
+      row_item.address.block() if defined("row_item.address.address") else ""
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+edit:
+  - address.address
+  - name.first
+confirm: True
+
+---
+id: download Minnesota_health_care_directive
+event: Minnesota_health_care_directive_download
+question: |
+  All done
+subquestion: |
+  Thank you ${users}. Your form is ready to download and deliver.
+  
+  View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
+
+  ${ action_button_html(url_action('review_Minnesota_health_care_directive'), label='Edit answers', color='info') }
+  
+  
+  ${ al_user_bundle.download_list_html() }
+  
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=True) }
+
+progress: 100
+---
+# ALDocument objects specify the metadata for each template
+objects:
+  - Minnesota_health_care_directive_Post_interview_instructions: ALDocument.using(title="Instructions", filename="Minnesota_health_care_directive_next_steps.docx", enabled=True, has_addendum=False)
+  - Minnesota_health_care_directive_attachment: ALDocument.using(title="Minnesota health care directive", filename="Minnesota_health_care_directive", enabled=True, has_addendum=False, )
+---
+# Bundles group the ALDocuments into separate downloads, such as for court and for the user
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[Minnesota_health_care_directive_Post_interview_instructions, Minnesota_health_care_directive_attachment], filename="Minnesota_health_care_directive", title="All forms to download for your records", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[Minnesota_health_care_directive_attachment],  filename="Minnesota_health_care_directive", title="All forms to deliver to court", enabled=True)
+---
+# Each attachment defines a key in an ALDocument. We use `i` as the placeholder here so the same template is 
+# used for "preview" and "final" keys, and logic in the template checks the value of 
+# `i` to show or hide the user's signature
+attachment:
+  name: Post-interview-Instructions
+  filename: Minnesota_health_care_directive_next_steps
+  docx template file: Minnesota_health_care_directive_next_steps.docx
+  variable name: Minnesota_health_care_directive_Post_interview_instructions[i]
+  skip undefined: True
+  tagged pdf: True
+---
+attachment:
+  name: Minnesota health care directive
+  filename: Minnesota_health_care_directive
+  variable name: Minnesota_health_care_directive_attachment[i]
+  skip undefined: True
+  docx template file: Minnesota_health_care_directive.docx
+  tagged pdf: True
+
+
+
